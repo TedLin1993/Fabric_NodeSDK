@@ -1,0 +1,25 @@
+---
+name: aml-network-org0
+version: 1.0.0
+client:
+  organization: org0
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  Org0:
+    mspid: org0MSP
+    peers:
+    - peer1-org0
+    certificateAuthorities:
+    - org0
+peers:
+  peer1-org0:
+    url: grpcs://localhost:7000
+    tlsCACerts:
+      path: /home/ted/AML_fabricTest/org0/peer1/tls-msp/tlscacerts/tls-0-0-0-0-7052.pem
+    grpcOptions:
+      ssl-target-name-override: peer1-org0
+      hostnameOverride: peer1-org0
+
