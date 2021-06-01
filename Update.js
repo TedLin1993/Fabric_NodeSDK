@@ -65,22 +65,22 @@ async function main() {
 
         const contract = await network.getContract('amlchaincode');
 
-        // Query
-        console.log('Submit aml Query.');
+        // Update
+        console.log('Submit aml Update.');
 
-        const queryResponse = await contract.evaluateTransaction('Query','');
+        const UpdateResponse = await contract.submitTransaction('Update','la','fir','1990/01/01','TWN','A123456123','medium');
 
         // process response
-        console.log('Process Query response.'+ queryResponse);
+        console.log('Process Update response.'+ UpdateResponse);
 
-        // let paper = CommercialPaper.fromBuffer(queryResponse);
+        // let paper = CommercialPaper.fromBuffer(UpdateResponse);
 
         // console.log(`${paper.issuer} commercial paper : ${paper.paperNumber} successfully issued for value ${paper.faceValue}`);
-        console.log('Query complete.');
+        console.log('Update complete.');
 
     } catch (error) {
 
-        console.log(`Error processing Query. ${error}`);
+        console.log(`Error processing Update. ${error}`);
         console.log(error.stack);
 
     } finally {
@@ -93,11 +93,11 @@ async function main() {
 }
 main().then(() => {
 
-    console.log('Query program complete.');
+    console.log('Update program complete.');
 
 }).catch((e) => {
 
-    console.log('Query program exception.');
+    console.log('Update program exception.');
     console.log(e);
     console.log(e.stack);
     process.exit(-1);
