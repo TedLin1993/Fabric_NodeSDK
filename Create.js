@@ -46,7 +46,7 @@ async function main() {
             identity: userName,
             wallet: wallet,
             //because node is in docker, asLocalhost should be true
-            discovery: { enabled:true, asLocalhost: true }
+            discovery: { enabled: true, asLocalhost: true }
         };
 
         // Connect to gateway using application specified parameters
@@ -68,14 +68,11 @@ async function main() {
         // Create
         console.log('Submit aml Create.');
 
-        const CreateResponse = await contract.submitTransaction('Create','la','fir','1990/01/01','TWN','A123456123','low');
+        const CreateResponse = await contract.submitTransaction('Create', 'la', 'fir', '1990/01/01', 'TWN', 'A123456123', 'low');
 
         // process response
-        console.log('Process Create response.'+ CreateResponse);
+        console.log('Process Create response.' + CreateResponse);
 
-        // let paper = CommercialPaper.fromBuffer(CreateResponse);
-
-        // console.log(`${paper.issuer} commercial paper : ${paper.paperNumber} successfully issued for value ${paper.faceValue}`);
         console.log('Create complete.');
 
     } catch (error) {

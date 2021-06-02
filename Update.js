@@ -68,7 +68,7 @@ async function main() {
         // Update
         console.log('Submit aml Update.');
 
-        const UpdateResponse = await contract.submitTransaction('Update','la','fir','1990/01/01','TWN','A123456123','medium');
+        const UpdateResponse = await contract.submitTransaction('Update','la','fir','1990/01/01','TWN','A123456123','high');
 
         // process response
         console.log('Process Update response.'+ UpdateResponse);

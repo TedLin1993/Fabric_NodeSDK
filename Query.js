@@ -20,8 +20,8 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 const { Wallets, Gateway } = require('fabric-network');
-//const CommercialPaper = require('../contract/lib/paper.js');
-
+const { json } = require('sjcl');
+//import { prettyPrintJson } from 'pretty-print-json';
 // Main program function
 async function main() {
 
@@ -46,7 +46,7 @@ async function main() {
             identity: userName,
             wallet: wallet,
             //because node is in docker, asLocalhost should be true
-            discovery: { enabled:true, asLocalhost: true }
+            discovery: { enabled: true, asLocalhost: true }
         };
 
         // Connect to gateway using application specified parameters
@@ -67,17 +67,20 @@ async function main() {
 
         // Query
         console.log('Submit aml Query.');
-
-        const queryResponse = await contract.evaluateTransaction('Query','');
+        //couchdb query with json format
+        const queryResponse = await contract.evaluateTransaction('Query', '\
+        { \
+            "selector":{ \
+                "data_owner": "org0MSP" \
+            } \
+        }');
 
         // process response
-        console.log('Process Query response.'+ queryResponse);
-
-        // let paper = CommercialPaper.fromBuffer(queryResponse);
-
-        // console.log(`${paper.issuer} commercial paper : ${paper.paperNumber} successfully issued for value ${paper.faceValue}`);
+        console.log('Process Query response.');
+        let queryResult = JSON.stringify(JSON.parse(queryResponse.toString()), null, 2);
+        console.log(queryResult);
         console.log('Query complete.');
-
+        
     } catch (error) {
 
         console.log(`Error processing Query. ${error}`);
@@ -88,7 +91,7 @@ async function main() {
         // Disconnect from the gateway
         console.log('Disconnect from Fabric gateway.');
         gateway.disconnect();
-
+        process.exit(1);
     }
 }
 main().then(() => {
