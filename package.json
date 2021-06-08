@@ -1,0 +1,40 @@
+{
+  "devDependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "ts-node": "^10.0.0"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "name": "fabric_amlnodesdk",
+  "version": "1.0.0",
+  "main": "Create.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TedLin1993/Fabric_NodeSDK.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TedLin1993/Fabric_NodeSDK/issues"
+  },
+  "homepage": "https://github.com/TedLin1993/Fabric_NodeSDK#readme",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.2",
+    "fabric-network": "^2.2.6",
+    "install": "^0.13.0",
+    "js-yaml": "^4.1.0",
+    "method-override": "^3.0.0",
+    "mysql": "^2.18.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.1.2",
+    "typescript": "^4.3.2"
+  }
+}
