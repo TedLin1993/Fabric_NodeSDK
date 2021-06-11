@@ -40,7 +40,7 @@ app.get('/', checkAuthenticated, (req, res) => {
   res.render('index.ejs', { name: user })
 })
 
-const querymodule = require('./scripts/query')
+const queryModule = require('./scripts/query')
 app.get('/query', checkAuthenticated, (req, res) => {
   res.render('query.ejs', { name: user, logStr: '' })
 })
@@ -68,8 +68,26 @@ app.post('/query', checkAuthenticated, async (req, res) => {
 
   //get query information
   let queryStr = queryStrList.join(',')
-  let logStr = await querymodule.Query('org0', queryStr)
+  let logStr = await queryModule.Query(user, queryStr)
   res.render('query.ejs', { name: user, logStr: logStr })
+})
+const createModule = require('./scripts/invoke')
+app.get('/create', checkAuthenticated, (req, res) => {
+  res.render('create.ejs', { name: user, logStr: '' })
+})
+
+app.post('/create', checkAuthenticated, async (req, res) => {
+  let invoke = {}
+  invoke.function = 'Create'
+  invoke.last_name = req.body.last_name
+  invoke.first_name = req.body.first_name
+  invoke.dob = req.body.dob
+  invoke.country = req.body.country
+  invoke.id_number = req.body.id_number
+  invoke.data_owner =req.body.data_owner
+  invoke.risk_level = req.body.risk_level
+  let logStr = await createModule.Invoke(user, invoke)
+  res.render('create.ejs', { name: user, logStr: logStr})
 })
 
 app.get('/login', checkNotAuthenticated, (req, res) => {

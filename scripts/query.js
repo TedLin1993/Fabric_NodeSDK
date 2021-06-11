@@ -52,8 +52,9 @@ async function Query(user, queryStr) {
 
         await gateway.connect(connectionProfile, connectionOptions)
 
-        // Access AML network
+        // Access AML network and chaincode
         const channelName = 'amlchannel'
+        const chaincodeName = 'amlchaincode1_4'
         logStr += `Use network channel: ${channelName}\n`
         // console.log('Use network channel: ' + channelName);
 
@@ -63,7 +64,7 @@ async function Query(user, queryStr) {
         logStr += `Use AML smart contract.\n`
         // console.log('Use AML smart contract.');
 
-        const contract = await network.getContract('amlchaincode1_4');
+        const contract = await network.getContract(chaincodeName);
 
         // Query
         logStr += `Submit aml Query.\n`
@@ -90,10 +91,8 @@ async function Query(user, queryStr) {
         // console.log(`Error processing Query. ${error}`);
         logStr += `${error.stack}\n`
         // console.log(error.stack);
-
-
+        
     } finally {
-
         // Disconnect from the gateway
         logStr += `Disconnect from Fabric gateway.\n`
         // console.log('Disconnect from Fabric gateway.');
@@ -104,5 +103,5 @@ async function Query(user, queryStr) {
 
 
 module.exports = {
-    Query : Query
+    Query: Query
 }

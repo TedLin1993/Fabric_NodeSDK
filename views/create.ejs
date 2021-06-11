@@ -1,0 +1,48 @@
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <%- include ('header.ejs') %>
+
+        <div class=container>
+            <form class="form" action="/create" method="post">
+                <h3 class="text-center text-info">Create</h3>
+                <% if (messages.error) { %>
+                    <%= messages.error %>
+                        <% } %>
+                <div class="form-group">
+                    <label for="id_number" class="text-info">ID_number:</label><br>
+                    <input type="text" name="id_number" id="id_number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="data_owner" class="text-info">Data_owner:</label><br>
+                    <input type="text" name="data_owner" id="data_owner" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="last_name" class="text-info">Last_name:</label><br>
+                    <input type="text" name="last_name" id="last_name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="first_name" class="text-info">First_name:</label><br>
+                    <input type="text" name="first_name" id="first_name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="dob" class="text-info">DOB:</label><br>
+                    <input type="text" name="dob" id="dob" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="country" class="text-info">Country:</label><br>
+                    <input type="text" name="country" id="country" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="risk_level" class="text-info">Risk_level:</label><br>
+                    <input type="text" name="risk_level" id="risk_level" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
+                </div>
+            </form>
+            <%- logStr.replace(/\n/g,'<br>') %>
+        </div>
+</body>

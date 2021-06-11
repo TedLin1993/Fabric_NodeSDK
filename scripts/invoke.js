@@ -20,10 +20,9 @@
 const fs = require('fs');
 const yaml = require('js-yaml');
 const { Wallets, Gateway } = require('fabric-network');
-//const CommercialPaper = require('../contract/lib/paper.js');
 
-// Main program function
-async function main() {
+let logStr
+async function Invoke(user, invokeParam) {
 
     // A wallet stores a collection of identities for use
     const wallet = await Wallets.newFileSystemWallet('/home/ted/Documents/Fabric_AMLNodeSDK/wallet');
@@ -35,11 +34,10 @@ async function main() {
     try {
 
         // Specify userName for network access
-        // const userName = 'isabella.issuer@magnetocorp.com';
-        const userName = 'org0User';
+        const userName = `${user}User`;
 
         // Load connection profile; will be used to locate a gateway
-        let connectionProfile = yaml.load(fs.readFileSync('/home/ted/Documents/Fabric_AMLNodeSDK/gateway/connection-org0.yaml', 'utf8'));
+        let connectionProfile = yaml.load(fs.readFileSync(`/home/ted/Documents/Fabric_AMLNodeSDK/gateway/connection-${user}.yaml`, 'utf8'));
 
         // Set connection options; identity and wallet
         let connectionOptions = {
@@ -50,53 +48,49 @@ async function main() {
         };
 
         // Connect to gateway using application specified parameters
-        console.log('Connect to Fabric gateway.');
+        logStr += 'Connect to Fabric gateway.\n';
 
         await gateway.connect(connectionProfile, connectionOptions);
 
         // Access AML network
         const channelName = 'amlchannel'
-        console.log('Use network channel: ' + channelName);
+        const chaincodeName = 'amlchaincode1_4'
+
+        logStr += 'Use network channel: ' + channelName + '\n';
 
         const network = await gateway.getNetwork(channelName);
 
         // Get addressability to commercial AML contract
-        console.log('Use AML smart contract.');
+        logStr += 'Use AML smart contract.\n';
 
-        const contract = await network.getContract('amlchaincode');
+        const contract = await network.getContract(chaincodeName);
 
-        // Create
-        console.log('Submit aml Create.');
+        // Invoke
+        logStr += `Submit aml ${invokeParam.function}.\n`;
 
-        const CreateResponse = await contract.submitTransaction('Create', 'la', 'fir', '1990/01/01', 'TWN', 'A123456123', 'low');
+        const InvokeResponse = await contract.submitTransaction(invokeParam.function, 
+            invokeParam.last_name, invokeParam.first_name, invokeParam.dob, invokeParam.country, 
+            invokeParam.id_number, invokeParam.risk_level);
 
         // process response
-        console.log('Process Create response.' + CreateResponse);
+        logStr += `Process ${invokeParam.function} response.`+ InvokeResponse + '\n';
 
-        console.log('Create complete.');
+        logStr += `${invokeParam.function} complete.\n`;
 
     } catch (error) {
 
-        console.log(`Error processing Create. ${error}`);
-        console.log(error.stack);
+        logStr += `Error processing. ${error}\n`;
+        logStr += error.stack + '\n';
 
     } finally {
 
         // Disconnect from the gateway
-        console.log('Disconnect from Fabric gateway.');
+        logStr += 'Disconnect from Fabric gateway.\n';
         gateway.disconnect();
+        return logStr;
 
     }
 }
-main().then(() => {
-
-    console.log('Create program complete.');
-
-}).catch((e) => {
-
-    console.log('Create program exception.');
-    console.log(e);
-    console.log(e.stack);
-    process.exit(-1);
-
-});
+module.exports = {
+    Invoke: Invoke
+}
