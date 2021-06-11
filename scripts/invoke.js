@@ -68,7 +68,7 @@ async function Invoke(user, invokeParam) {
         // Invoke
         logStr += `Submit aml ${invokeParam.function}.\n`;
 
-        const InvokeResponse = await contract.submitTransaction(invokeParam.function, 
+        let InvokeResponse = await contract.submitTransaction(invokeParam.function, 
             invokeParam.last_name, invokeParam.first_name, invokeParam.dob, invokeParam.country, 
             invokeParam.id_number, invokeParam.risk_level);
 

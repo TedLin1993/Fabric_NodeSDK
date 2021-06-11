@@ -71,7 +71,10 @@ app.post('/query', checkAuthenticated, async (req, res) => {
   let logStr = await queryModule.Query(user, queryStr)
   res.render('query.ejs', { name: user, logStr: logStr })
 })
-const createModule = require('./scripts/invoke')
+
+//create, update and delete use invoke module
+const invokeModule = require('./scripts/invoke')
+
 app.get('/create', checkAuthenticated, (req, res) => {
   res.render('create.ejs', { name: user, logStr: '' })
 })
@@ -86,8 +89,25 @@ app.post('/create', checkAuthenticated, async (req, res) => {
   invoke.id_number = req.body.id_number
   invoke.data_owner =req.body.data_owner
   invoke.risk_level = req.body.risk_level
-  let logStr = await createModule.Invoke(user, invoke)
+  let logStr = await invokeModule.Invoke(user, invoke)
   res.render('create.ejs', { name: user, logStr: logStr})
+})
+
+app.get('/update', checkAuthenticated, (req, res) => {
+  res.render('update.ejs', { name: user, logStr: '' })
+})
+
+app.post('/update', checkAuthenticated, async (req, res) => {
+  let invoke = {}
+  invoke.function = 'Update'
+  invoke.last_name = req.body.last_name
+  invoke.first_name = req.body.first_name
+  invoke.dob = req.body.dob
+  invoke.country = req.body.country
+  invoke.id_number = req.body.id_number
+  invoke.risk_level = req.body.risk_level
+  let logStr = await invokeModule.Invoke(user, invoke)
+  res.render('update.ejs', { name: user, logStr: logStr})
 })
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
