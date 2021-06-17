@@ -1,0 +1,24 @@
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <%- include ('header.ejs') %>
+
+        <div class=container>
+            <form class="form" action="/delete" method="post">
+                <h3 class="text-center text-info">Delete</h3>
+                <% if (messages.error) { %>
+                    <%= messages.error %>
+                        <% } %>
+                <div class="form-group">
+                    <label for="id_number" class="text-info">ID_number:</label><br>
+                    <input type="text" name="id_number" id="id_number" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
+                </div>
+            </form>
+            <%- logStr.replace(/\n/g,'<br>') %>
+        </div>
+</body>

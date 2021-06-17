@@ -68,8 +68,8 @@ app.post('/query', checkAuthenticated, async (req, res) => {
 
   //get query information
   let queryStr = queryStrList.join(',')
-  let logStr = await queryModule.Query(user, queryStr)
-  res.render('query.ejs', { name: user, logStr: logStr })
+  let {logStr, queryResponseJson} = await queryModule.Query(user, queryStr)
+  res.render('query.ejs', { name: user, logStr: logStr, queryResponseJson: queryResponseJson })
 })
 
 //create, update and delete use invoke module
@@ -109,6 +109,34 @@ app.post('/update', checkAuthenticated, async (req, res) => {
   let logStr = await invokeModule.Invoke(user, invoke)
   res.render('update.ejs', { name: user, logStr: logStr})
 })
+
+
+app.get('/delete', checkAuthenticated, (req, res) => {
+  res.render('delete.ejs', { name: user, logStr: '' })
+})
+
+app.post('/delete', checkAuthenticated, async (req, res) => {
+  let invoke = {}
+  invoke.function = 'Delete'
+  invoke.id_number = req.body.id_number
+  let logStr = await invokeModule.invokeModule(user, invoke)
+  res.render('delete.ejs', { name: user, logStr: logStr})
+})
+
+const getHistoryModule = require('./scripts/getHistory')
+app.get('/getHistory', checkAuthenticated, (req, res) => {
+  res.render('getHistory.ejs', { name: user, logStr: '' })
+})
+
+app.post('/getHistory', checkAuthenticated, async (req, res) => {
+  let queryParam = {}
+  queryParam.id_number = req.body.id_number
+  queryParam.data_owner =req.body.data_owner
+
+  let logStr = await getHistoryModule.GetHistory(user, queryParam)
+  res.render('getHistory.ejs', { name: user, logStr: logStr})
+})
+
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')

@@ -23,7 +23,7 @@ const { Wallets, Gateway } = require('fabric-network');
 
 let logStr
 async function Invoke(user, invokeParam) {
-
+    logStr = ''
     // A wallet stores a collection of identities for use
     const wallet = await Wallets.newFileSystemWallet('/home/ted/Documents/Fabric_AMLNodeSDK/wallet');
 
@@ -67,13 +67,19 @@ async function Invoke(user, invokeParam) {
 
         // Invoke
         logStr += `Submit aml ${invokeParam.function}.\n`;
+        let InvokeResponse
 
-        let InvokeResponse = await contract.submitTransaction(invokeParam.function, 
-            invokeParam.last_name, invokeParam.first_name, invokeParam.dob, invokeParam.country, 
-            invokeParam.id_number, invokeParam.risk_level);
+        if (invokeParam.function == "Create" || invokeParam.function == "Update") {
+            InvokeResponse = await contract.submitTransaction(invokeParam.function,
+                invokeParam.last_name, invokeParam.first_name, invokeParam.dob, invokeParam.country,
+                invokeParam.id_number, invokeParam.risk_level);
+        } else if (invokeParam.function == "Delete") {
+            InvokeResponse = await contract.submitTransaction(invokeParam.function, invokeParam.id_number);
+        }
+
 
         // process response
-        logStr += `Process ${invokeParam.function} response.`+ InvokeResponse + '\n';
+        logStr += `Process ${invokeParam.function} response.` + InvokeResponse + '\n';
 
         logStr += `${invokeParam.function} complete.\n`;
 

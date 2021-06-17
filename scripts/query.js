@@ -23,7 +23,10 @@ const { Wallets, Gateway } = require('fabric-network');
 const { json } = require('sjcl');
 
 let logStr;
+let queryResponseJson;
 async function Query(user, queryStr) {
+    logStr = ''
+    queryResponseJson = null
     // A wallet stores a collection of identities for use
     const wallet = await Wallets.newFileSystemWallet('/home/ted/Documents/Fabric_AMLNodeSDK/wallet');
 
@@ -34,7 +37,6 @@ async function Query(user, queryStr) {
     try {
 
         // Specify userName for network access
-        // const userName = 'isabella.issuer@magnetocorp.com';
         const userName = user + 'User';
 
         // Load connection profile; will be used to locate a gateway
@@ -56,19 +58,16 @@ async function Query(user, queryStr) {
         const channelName = 'amlchannel'
         const chaincodeName = 'amlchaincode1_4'
         logStr += `Use network channel: ${channelName}\n`
-        // console.log('Use network channel: ' + channelName);
 
         const network = await gateway.getNetwork(channelName);
 
         // Get addressability to commercial AML contract
         logStr += `Use AML smart contract.\n`
-        // console.log('Use AML smart contract.');
 
         const contract = await network.getContract(chaincodeName);
 
         // Query
         logStr += `Submit aml Query.\n`
-        // console.log('Submit aml Query.');
         //couchdb query with json format
         const queryResponse = await contract.evaluateTransaction('Query', `\
         { \
@@ -79,25 +78,26 @@ async function Query(user, queryStr) {
 
         // process response
         logStr += `Process Query response.\n`
-        // console.log('Process Query response.');
-        let queryResult = JSON.stringify(JSON.parse(queryResponse.toString()), null, 2);
-        logStr += `${queryResult}\n`
-        // console.log(queryResult);
+
+        // let queryResult = JSON.stringify(JSON.parse(queryResponse.toString()), null, 2);
+        // logStr += `${queryResult}\n`
+        
+        queryResponseJson = JSON.parse(queryResponse.toString())
+
         logStr += `Query complete.\n`
-        // console.log('Query complete.');
 
     } catch (error) {
         logStr += `Error processing Query. ${error}\n`
-        // console.log(`Error processing Query. ${error}`);
         logStr += `${error.stack}\n`
-        // console.log(error.stack);
         
     } finally {
         // Disconnect from the gateway
         logStr += `Disconnect from Fabric gateway.\n`
-        // console.log('Disconnect from Fabric gateway.');
         gateway.disconnect();
-        return logStr;
+        return {
+            logStr: logStr, 
+            queryResponseJson: queryResponseJson
+        };
     }
 }
 

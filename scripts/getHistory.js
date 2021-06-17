@@ -21,11 +21,12 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const { Wallets, Gateway } = require('fabric-network');
 const { json } = require('sjcl');
-//const CommercialPaper = require('../contract/lib/paper.js');
 
-// Main program function
-async function main() {
+let logStr
 
+// GetHistory function
+async function GetHistory(user, queryParam) {
+    logStr = ''
     // A wallet stores a collection of identities for use
     const wallet = await Wallets.newFileSystemWallet('/home/ted/Documents/Fabric_AMLNodeSDK/wallet');
 
@@ -36,11 +37,9 @@ async function main() {
     try {
 
         // Specify userName for network access
-        // const userName = 'isabella.issuer@magnetocorp.com';
-        const userName = 'org0User';
-
+        const userName = user + 'User';
         // Load connection profile; will be used to locate a gateway
-        let connectionProfile = yaml.load(fs.readFileSync('/home/ted/Documents/Fabric_AMLNodeSDK/gateway/connection-org0.yaml', 'utf8'));
+        let connectionProfile = yaml.load(fs.readFileSync(`/home/ted/Documents/Fabric_AMLNodeSDK/gateway/connection-${user}.yaml`, 'utf8'));
 
         // Set connection options; identity and wallet
         let connectionOptions = {
@@ -51,55 +50,49 @@ async function main() {
         };
 
         // Connect to gateway using application specified parameters
-        console.log('Connect to Fabric gateway.');
+        logStr += 'Connect to Fabric gateway.\n';
 
         await gateway.connect(connectionProfile, connectionOptions);
 
         // Access AML network
         const channelName = 'amlchannel'
-        console.log('Use network channel: ' + channelName);
+        const chaincodeName = 'amlchaincode1_4'
+
+        logStr += 'Use network channel: ' + channelName;
 
         const network = await gateway.getNetwork(channelName);
 
         // Get addressability to commercial AML contract
-        console.log('Use AML smart contract.');
+        logStr += 'Use AML smart contract.\n';
 
-        const contract = await network.getContract('amlchaincode1_4');
+        const contract = await network.getContract(chaincodeName);
 
         // GetHistory
-        console.log('AML GetHistory.');
+        logStr += 'AML GetHistory.\n';
         //couchdb query with json format
-        const GetHistoryResponse = await contract.evaluateTransaction('GetHistory', 'D111111111', 'org0MSP');
-
+        const GetHistoryResponse = await contract.evaluateTransaction('GetHistory', queryParam.id_number, queryParam.data_owner);
+        
         // process response
-        console.log('Process GetHistory response.');
+        logStr += 'Process GetHistory response.\n';
         let GetHistoryResult = JSON.stringify(JSON.parse(GetHistoryResponse.toString()), null, 2);
 
-        console.log(GetHistoryResult);
-        console.log('GetHistory complete.');
+        logStr += GetHistoryResult + '\n';
+        logStr += 'GetHistory complete.\n';
         
     } catch (error) {
 
-        console.log(`Error processing GetHistory. ${error}`);
-        console.log(error.stack);
+        logStr += `Error processing GetHistory. ${error}\n`;
+        logStr += error.stack + '\n';
 
     } finally {
 
         // Disconnect from the gateway
-        console.log('Disconnect from Fabric gateway.');
+        logStr += 'Disconnect from Fabric gateway.\n';
         gateway.disconnect();
-        process.exit(1);
+        return logStr
     }
 }
-main().then(() => {
 
-    console.log('GetHistory program complete.');
-
-}).catch((e) => {
-
-    console.log('GetHistory program exception.');
-    console.log(e);
-    console.log(e.stack);
-    process.exit(-1);
-
-});
+module.exports = {
+    GetHistory: GetHistory
+}
